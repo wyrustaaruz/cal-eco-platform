@@ -39,7 +39,7 @@ const CustomModal = ({
         <div
           ref={dialogRef}
           tabIndex={-1}
-          className="w-full max-w-md rounded-md bg-white p-4 shadow-2xl outline-none"
+          className="w-full max-w-md rounded-md p-4 shadow-2xl outline-none"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="relative">
@@ -50,7 +50,20 @@ const CustomModal = ({
               onClick={handleClose}
               aria-label="Close"
             >
-              &times;
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="white"
+                className="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
           </div>
           <div className="max-h-[90vh] overflow-y-auto rounded-md">{body}</div>

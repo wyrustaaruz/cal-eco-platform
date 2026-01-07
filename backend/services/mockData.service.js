@@ -118,8 +118,9 @@ class MockDataService {
 
   // User operations
   getUserByAddress(address) {
+    if (!address) return [];
     for (const user of this.users.values()) {
-      if (user.address.toLowerCase() === address.toLowerCase()) {
+      if (user.address && user.address.toLowerCase() === address.toLowerCase()) {
         return [user];
       }
     }

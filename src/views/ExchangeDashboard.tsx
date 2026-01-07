@@ -27,22 +27,26 @@ import {
 
 const ExchangeDashboard: React.FC = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState("24H");
-  const [selectedTokens, setSelectedTokens] = useState<string[]>(["BTC", "ETH"]);
+  const [selectedTokens, setSelectedTokens] = useState<string[]>([
+    "BTC",
+    "ETH",
+  ]);
   const [selectedPeriod, setSelectedPeriod] = useState("Weekly (2020)");
 
   const cryptoCards = getCryptoCards();
   const marketData = getMarketOverviewData();
   const statistics = getBasicStatistics();
-  const portfolioData = useMemo(() => getPortfolioData(selectedTimeRange), [selectedTimeRange]);
+  const portfolioData = useMemo(
+    () => getPortfolioData(selectedTimeRange),
+    [selectedTimeRange],
+  );
   const holdings = getHoldings();
   const watchlist = getWatchlist();
   const transactions = getTransactions();
 
   const handleTokenToggle = (token: string) => {
     setSelectedTokens((prev) =>
-      prev.includes(token)
-        ? prev.filter((t) => t !== token)
-        : [...prev, token]
+      prev.includes(token) ? prev.filter((t) => t !== token) : [...prev, token],
     );
   };
 
@@ -51,33 +55,33 @@ const ExchangeDashboard: React.FC = () => {
       statistics.allTimeVolume,
       statistics.dailyTradeVolume,
       statistics.lockedValue,
-      statistics.activeUsers
+      statistics.activeUsers,
     );
-    
+
     return [
-      { 
-        name: "Active Users", 
-        value: statistics.activeUsers, 
+      {
+        name: "Active Users",
+        value: statistics.activeUsers,
         fill: "#a855f7",
-        normalizedValue: (statistics.activeUsers / maxValue) * 100
+        normalizedValue: (statistics.activeUsers / maxValue) * 100,
       },
-      { 
-        name: "Locked Value", 
-        value: statistics.lockedValue, 
+      {
+        name: "Locked Value",
+        value: statistics.lockedValue,
         fill: "#3b82f6",
-        normalizedValue: (statistics.lockedValue / maxValue) * 100
+        normalizedValue: (statistics.lockedValue / maxValue) * 100,
       },
-      { 
-        name: "24 Hour Trade Volume", 
-        value: statistics.dailyTradeVolume, 
+      {
+        name: "24 Hour Trade Volume",
+        value: statistics.dailyTradeVolume,
         fill: "#10b981",
-        normalizedValue: (statistics.dailyTradeVolume / maxValue) * 100
+        normalizedValue: (statistics.dailyTradeVolume / maxValue) * 100,
       },
-      { 
-        name: "All time Volume", 
-        value: statistics.allTimeVolume, 
+      {
+        name: "All time Volume",
+        value: statistics.allTimeVolume,
         fill: "#f97316",
-        normalizedValue: (statistics.allTimeVolume / maxValue) * 100
+        normalizedValue: (statistics.allTimeVolume / maxValue) * 100,
       },
     ];
   }, [statistics]);
@@ -88,7 +92,10 @@ const ExchangeDashboard: React.FC = () => {
     } else if (value >= 1000) {
       return `$${(value / 1000).toFixed(2)}k`;
     }
-    return `$${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `$${value.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   const formatNumber = (value: number): string => {
@@ -96,7 +103,7 @@ const ExchangeDashboard: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen px-12 py-6">
+    <div className="w-full min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Dashboard Header */}
       <div className="flex items-center justify-between mb-20">
         <h1 className="text-3xl font-bold text-white">Dashboard</h1>
@@ -130,21 +137,13 @@ const ExchangeDashboard: React.FC = () => {
           className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-colors"
           aria-label="Previous"
         >
-          <img 
-            src="/icons/arrow-left.png" 
-            alt="Previous"
-            className="w-6 h-6"
-          />
+          <img src="/icons/arrow-left.png" alt="Previous" className="w-6 h-6" />
         </button>
         <button
           className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 transition-colors"
           aria-label="Next"
         >
-          <img 
-            src="/icons/arrow-right.png" 
-            alt="Next"
-            className="w-6 h-6"
-          />
+          <img src="/icons/arrow-right.png" alt="Next" className="w-6 h-6" />
         </button>
       </div>
 
@@ -160,10 +159,7 @@ const ExchangeDashboard: React.FC = () => {
           <div className="flex flex-wrap items-center gap-4 mb-6">
             <div className="flex gap-2">
               {["BTC", "ETH", "BNB", "XRP"].map((token) => (
-                <label
-                  key={token}
-                  className="flex items-center cursor-pointer"
-                >
+                <label key={token} className="flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={selectedTokens.includes(token)}
@@ -198,7 +194,10 @@ const ExchangeDashboard: React.FC = () => {
 
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={marketData} key={`market-${selectedTokens.join('-')}`}>
+              <LineChart
+                data={marketData}
+                key={`market-${selectedTokens.join("-")}`}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
                 <XAxis
                   dataKey="week"
@@ -269,33 +268,36 @@ const ExchangeDashboard: React.FC = () => {
             Basic Statistics
           </h2>
 
-          <div className="h-48 mb-6 flex items-center justify-center relative" style={{ width: '100%' }}>
+          <div
+            className="h-48 mb-6 flex items-center justify-center relative"
+            style={{ width: "100%" }}
+          >
             {statsChartData.map((entry, index) => {
               const baseInner = 20;
               const gap = -5;
               const arcWidth = 20;
-              
+
               const innerRadius = baseInner + index * (arcWidth + gap);
               const outerRadius = innerRadius + arcWidth;
-              
+
               const singleData = [
-                { 
-                  name: 'max',
+                {
+                  name: "max",
                   value: 100,
-                  fill: 'rgba(0,0,0,0)'
+                  fill: "rgba(0,0,0,0)",
                 },
-                { 
+                {
                   name: entry.name,
                   value: entry.normalizedValue,
-                  fill: entry.fill
-                }
+                  fill: entry.fill,
+                },
               ];
-              
+
               return (
                 <div
                   key={entry.name}
                   className="absolute inset-0"
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: "100%", height: "100%" }}
                 >
                   <ResponsiveContainer width="100%" height="100%">
                     <RadialBarChart
@@ -308,14 +310,15 @@ const ExchangeDashboard: React.FC = () => {
                       data={singleData}
                       barSize={10}
                     >
-                      <RadialBar
-                        dataKey="value"
-                        cornerRadius={4}
-                      >
+                      <RadialBar dataKey="value" cornerRadius={4}>
                         {singleData.map((dataPoint, dataIndex) => (
-                          <Cell 
-                            key={`cell-${dataIndex}`} 
-                            fill={dataPoint.fill === 'rgba(0,0,0,0)' ? 'transparent' : dataPoint.fill}
+                          <Cell
+                            key={`cell-${dataIndex}`}
+                            fill={
+                              dataPoint.fill === "rgba(0,0,0,0)"
+                                ? "transparent"
+                                : dataPoint.fill
+                            }
                           />
                         ))}
                       </RadialBar>
@@ -372,14 +375,17 @@ const ExchangeDashboard: React.FC = () => {
                 >
                   {range}
                 </button>
-              )
+              ),
             )}
           </div>
         </div>
 
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={portfolioData} key={`portfolio-${selectedTimeRange}`}>
+            <LineChart
+              data={portfolioData}
+              key={`portfolio-${selectedTimeRange}`}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
               <XAxis
                 dataKey="time"
@@ -443,4 +449,3 @@ const ExchangeDashboard: React.FC = () => {
 };
 
 export default ExchangeDashboard;
-

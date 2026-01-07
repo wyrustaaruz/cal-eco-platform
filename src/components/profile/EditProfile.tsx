@@ -1,4 +1,10 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 
 import { ReactComponent as CopyIcon } from "../../assets/images/copy.svg";
@@ -211,9 +217,11 @@ const EditProfile = () => {
   const checkUsernameExists = async () => {
     try {
       // Send a request to your API to check if the username already exists
-      const response = await getApi(`/users/exists/username/${username}`);
+      const response = await getApi<{ exists: boolean }>(
+        `/users/exists/username/${username}`,
+      );
 
-      if (response.data.exists) {
+      if (response.data?.exists) {
         setError("username", {
           type: "validate",
           message: "Username already exists!",
@@ -316,7 +324,11 @@ const EditProfile = () => {
               label="Update"
               customClass="rounded-md"
               isLoading={isLoading}
-              isValid={Object.values(errors).length === 0 && !isLoading && !isSubmitting}
+              isValid={
+                Object.values(errors).length === 0 &&
+                !isLoading &&
+                !isSubmitting
+              }
             />
           </form>
         </div>

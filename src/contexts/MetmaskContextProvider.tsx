@@ -30,7 +30,7 @@ type MetamaskContextType = {
     data: string,
     value?: number | BigNumber,
     from?: string,
-    callback?: Function
+    callback?: Function,
   ) => void;
   getBalance: () => Promise<BigNumber>;
   lumanagiPredictionV1ContractSocket: any;
@@ -66,7 +66,7 @@ const MetmaskContextProvider: React.FC<{
   ] = useState<any>(null);
 
   const [signer, setSigner] = useState<any | ethers.providers.JsonRpcSigner>(
-    null
+    null,
   );
 
   /**
@@ -75,40 +75,53 @@ const MetmaskContextProvider: React.FC<{
   const setContracts = async () => {
     if (provider) {
       try {
+        // Get Infura key from environment variables (security best practice)
+        const infuraKey = process.env.REACT_APP_INFURA_KEY;
+
+        if (!infuraKey) {
+          console.warn("REACT_APP_INFURA_KEY not set, using fallback provider");
+        }
+
+        const rpcUrl = infuraKey
+          ? `https://polygon-mumbai.infura.io/v3/${infuraKey}`
+          : "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161";
+
+        const wsUrl = infuraKey
+          ? `wss://polygon-mumbai.infura.io/ws/v3/${infuraKey}`
+          : "wss://polygon-mumbai.infura.io/ws/v3/9aa3d95b3bc440fa88ea12eaa4456161";
+
         // Create ethers providers for contract interactions
-        const httpProvider = new ethers.providers.JsonRpcProvider(
-          "https://polygon-mumbai.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-        );
-        
+        const httpProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
+
         // Create WebSocket provider for socket connections
-        const wsProvider = new ethers.providers.WebSocketProvider(
-          "wss://polygon-mumbai.infura.io/ws/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-        );
-        
+        const wsProvider = new ethers.providers.WebSocketProvider(wsUrl);
+
         const eacContract = new ethers.Contract(
           EAC_AGGREGATOR_PROXY_ADDRESS,
-          EacAggregatorProxyContractAbi as any,
-          httpProvider
+          EacAggregatorProxyContractAbi as ethers.ContractInterface,
+          httpProvider,
         );
         const lumangiContract = new ethers.Contract(
           LUMANAGI_PREDICTION_V1_ADDRESS,
-          LumanagiPredictionV1Abi as any,
-          httpProvider
+          LumanagiPredictionV1Abi as ethers.ContractInterface,
+          httpProvider,
         );
 
         const socketInstance = new ethers.Contract(
           LUMANAGI_PREDICTION_V1_ADDRESS,
-          LumanagiPredictionV1Abi as any,
-          wsProvider
+          LumanagiPredictionV1Abi as ethers.ContractInterface,
+          wsProvider,
         );
-        
+
         setEacAggregatorProxyContract(eacContract);
         setLumanagiPredictionV1Contract(lumangiContract);
         setLumanagiPredictionV1ContractSocket(socketInstance);
-        
+
         // Create ethers provider and signer
         if (window.ethereum) {
-          const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+          const ethersProvider = new ethers.providers.Web3Provider(
+            window.ethereum,
+          );
           setSigner(ethersProvider.getSigner());
         }
       } catch (error) {
@@ -126,7 +139,7 @@ const MetmaskContextProvider: React.FC<{
       try {
         if (window.ethereum.selectedAddress) {
           const balance = (await provider?.getBalance(
-            window.ethereum.selectedAddress
+            window.ethereum.selectedAddress,
           )) as BigNumber;
 
           return balance;
@@ -154,7 +167,7 @@ const MetmaskContextProvider: React.FC<{
     data: string,
     value?: BigNumber | number,
     from?: string,
-    callback?: Function
+    callback?: Function,
   ) => {
     let signerTemp = (provider as ethers.providers.Web3Provider).getSigner();
     if (!signer) {

@@ -7,12 +7,12 @@ import ChangePassword from "../components/auth/Change Password";
 
 export type AuthContextType = {
   user: IUser | null;
-  setUser: any;
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
   isAuthenticated: boolean;
-  setIsAuthenticated: any;
-  toggleModal: any;
-  setAuthAction: any;
-  updateAuthAction: any;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleModal: (status?: boolean | null) => void;
+  setAuthAction: React.Dispatch<React.SetStateAction<AuthActionType | null>>;
+  updateAuthAction: (inputAction: string | null) => void;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -78,9 +78,11 @@ const AuthContextProvider = ({ children }: any) => {
     setShowModal(status !== null ? status : !showModal);
   };
 
-  const updateAuthAction = (inputAction: string) => {
+  const updateAuthAction = (inputAction: string | null) => {
     setAuthAction(
-      AuthActions.find(({ action }) => action === inputAction) as AuthActionType
+      AuthActions.find(
+        ({ action }) => action === inputAction,
+      ) as AuthActionType,
     );
   };
 
@@ -89,6 +91,11 @@ const AuthContextProvider = ({ children }: any) => {
       setShowModal(true);
     }
   }, [Component]);
+
+  const handleClose = () => {
+    updateAuthAction(null);
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -106,7 +113,7 @@ const AuthContextProvider = ({ children }: any) => {
         {children}
         <CustomModal
           body={Component ? <Component /> : <></>}
-          handleClose={() => setShowModal(false)}
+          handleClose={handleClose}
           open={showModal}
         />
       </AuthContext.Provider>

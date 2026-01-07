@@ -1,13 +1,13 @@
-import './App.css';
-import { BrowserRouter } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import { Buffer } from 'buffer';
+import "./App.css";
+import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { Buffer } from "buffer";
 
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
-import Routers from './components/Router';
-import MetmaskContextProvider from './contexts/MetmaskContextProvider';
-import AuthContextProvider from './contexts/AuthContext';
+import Routers from "./components/Router";
+import MetmaskContextProvider from "./contexts/MetmaskContextProvider";
+import AuthContextProvider from "./contexts/AuthContext";
 
 function App() {
   if (!(window as any).Buffer) {
@@ -17,7 +17,10 @@ function App() {
   return (
     <MetmaskContextProvider>
       <AuthContextProvider>
-        <div className="absolute w-screen" id="dashboard">
+        <div
+          className="relative w-full min-h-screen overflow-x-hidden"
+          id="dashboard"
+        >
           <BrowserRouter>
             <Routers />
           </BrowserRouter>
