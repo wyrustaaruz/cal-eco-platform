@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useContext } from "react";
 import { ACCESS_TOKEN_LOCAL_STORAGE } from "../constants/common";
 import { getApi } from "../services/axios.service";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext, IUser } from "../contexts/AuthContext";
 
 const useAuth = () => {
   const { user, setUser, isAuthenticated, setIsAuthenticated } =
@@ -28,9 +28,9 @@ const useAuth = () => {
   };
 
   const updateUserInfo = useCallback(async () => {
-    const result = await getApi("/users/me");
+    const result = await getApi<IUser>("/users/me");
     setIsAuthenticated(true);
-    setUser(result.data);
+    setUser(result.data || null);
   }, [setIsAuthenticated, setUser]);
 
   useEffect(() => {
